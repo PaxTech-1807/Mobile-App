@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.paxtech.mobileapp.features.clientDashboard.presentation.salondetail.SalonDetailRoute
 
 @Preview
 @Composable
@@ -18,9 +19,23 @@ fun AppNav(){
     NavHost(navController, startDestination = Route.Home.route){
 
         composable(Route.Home.route){
-            Main {
-
-            }
+            Main(
+                onClick = {id ->
+                    navController.navigate("${Route.SalonDetails.route}/$id")
+                }
+            )
+        }
+        composable(
+            route = Route.SalonDetails.routeWithArgument,
+            arguments = listOf(navArgument(Route.SalonDetails.argument) {
+                type = NavType.IntType
+            })
+        ) { backStack ->
+            val id = backStack.arguments?.getInt(Route.SalonDetails.argument) ?: 0
+            SalonDetailRoute(
+                salonId = id,
+                onBack = { navController.popBackStack() }
+            )
         }
     }
 }

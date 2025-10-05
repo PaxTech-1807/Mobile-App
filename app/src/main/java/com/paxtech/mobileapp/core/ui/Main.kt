@@ -1,5 +1,7 @@
 package com.paxtech.mobileapp.core.ui
 
+import android.net.http.SslCertificate.restoreState
+import android.net.http.SslCertificate.saveState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -20,6 +22,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import com.paxtech.mobileapp.features.clientDashboard.presentation.home.Home
+import com.paxtech.mobileapp.features.clientDashboard.presentation.home.SalonDebugScreen
 
 data class NavigationItem(
     val icon: ImageVector,
@@ -28,47 +36,56 @@ data class NavigationItem(
 
 
 @Composable
-fun Main(onClick: (Int)-> Unit){
-    val selectedTab = remember {
-        mutableStateOf(0)
-    }
+fun Main(onClick: (Int) -> Unit) {
 
-    val navigationItems = listOf(
-        NavigationItem(icon = Icons.Default.Home, route = "Home"),
-        NavigationItem(icon = Icons.Default.Search, route = "Favorites"),
-        NavigationItem(icon = Icons.Default.CalendarToday, route = "Cart"),
-        NavigationItem(icon = Icons.Default.Person, route = "Profile"),
+    val tabNav = rememberNavController()
 
-        )
+    // map each tab to its route + icon (use your sealed routes)
+    val tabs = listOf(
+        Route.Home to Icons.Default.Home,
+        Route.Favorites to Icons.Default.Search,      // your magnifier icon
+        Route.Cart to Icons.Default.CalendarToday,    // your calendar icon
+        Route.Profile to Icons.Default.Person
+    )
 
     Scaffold(
         bottomBar = {
             BottomAppBar {
-                navigationItems.forEachIndexed { index, item ->
+                val currentRoute = tabNav.currentBackStackEntryAsState().value?.destination?.route
+                tabs.forEach { (route, icon) ->
                     NavigationBarItem(
-                        selected = index == selectedTab.value,
-                        icon = {
-                            Icon(item.icon, contentDescription = null)
-                        },
-                        label = {
-                            Text(text = item.route)
-                        },
+                        selected = currentRoute == route.route,
+                        icon = { Icon(icon, contentDescription = route.route) },
+                        label = { Text(route.route.replaceFirstChar { it.titlecase() }) },
                         onClick = {
-                            selectedTab.value = index
+                            tabNav.navigate(route.route) {
+                                popUpTo(tabNav.graph.startDestinationId) { saveState = true }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
                         }
                     )
                 }
             }
         }
-    ) {
-        Column(modifier = Modifier.padding(it)) {
-            //Home(onClick = onClick)
+    ) { innerPadding ->
+        // THIS renders the content for each tab
+        NavHost(
+            navController = tabNav,
+            startDestination = Route.Home.route,
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            composable(Route.Home.route)     { Home(onSalonClick = onClick)  }
+            composable(Route.Favorites.route){ Text("Favorites") }
+            composable(Route.Cart.route)     { Text("Cart") }
+            composable(Route.Profile.route)  { Text("Profile") }
         }
     }
 }
 
+
 @Preview(showBackground = true)
 @Composable
 fun MainPreview(){
-    Main {  }
+    Main {}
 }
