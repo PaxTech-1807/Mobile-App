@@ -10,14 +10,39 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.paxtech.mobileapp.features.authentication.presentation.splash.SplashScreen
+import com.paxtech.mobileapp.features.authentication.presentation.welcome.WelcomeScreen
 import com.paxtech.mobileapp.features.clientDashboard.presentation.salondetail.SalonDetailRoute
 
 @Preview
 @Composable
 fun AppNav(){
     val navController = rememberNavController()
-    NavHost(navController, startDestination = Route.Home.route){
+    NavHost(navController, startDestination = Route.Splash.route){
 
+        // Pantalla de Splash
+        composable(Route.Splash.route) {
+            SplashScreen(
+                onNavigateToWelcome = {
+                    navController.navigate(Route.Welcome.route) {
+                        popUpTo(Route.Splash.route) { inclusive = true }
+                    }
+                }
+            )
+        }
+        
+        // Pantalla de Bienvenida
+        composable(Route.Welcome.route) {
+            WelcomeScreen(
+                onStartClick = {
+                    navController.navigate(Route.Home.route) {
+                        popUpTo(Route.Splash.route) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        // Pantalla principal
         composable(Route.Home.route){
             Main(
                 onClick = {id ->
@@ -25,6 +50,7 @@ fun AppNav(){
                 }
             )
         }
+        
         composable(
             route = Route.SalonDetails.routeWithArgument,
             arguments = listOf(navArgument(Route.SalonDetails.argument) {
@@ -45,6 +71,11 @@ fun AppNav(){
 
 sealed class Route(val route: String) {
 
+    object Splash: Route("splash")
+    object Welcome: Route("welcome")
+    object Login: Route("login")
+    object Register: Route("register")
+    
     object Main: Route("main")
     object Home : Route("home")
     object Cart : Route("cart")
