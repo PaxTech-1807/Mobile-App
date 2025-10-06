@@ -6,9 +6,9 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface SalonService {
-    @GET("provider-profiles")
+    @GET("api/v1/provider-profiles")
     suspend fun getAllSalons(): Response<List<SalonDto>?>
 
-    @GET("provider-profiles/{id}")
+    @GET("api/v1/provider-profiles/{id}")
     suspend fun getSalonById(@Path("id") id: Int): Response<SalonDto>
 }
