@@ -12,6 +12,11 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.paxtech.mobileapp.features.authentication.presentation.splash.SplashScreen
 import com.paxtech.mobileapp.features.authentication.presentation.welcome.WelcomeScreen
+import com.paxtech.mobileapp.features.authentication.presentation.login.LoginScreen
+import com.paxtech.mobileapp.features.authentication.presentation.register.RegisterScreen
+import com.paxtech.mobileapp.features.authentication.presentation.register.RegisterType
+import com.paxtech.mobileapp.features.authentication.presentation.register.SuccessClientScreen
+import com.paxtech.mobileapp.features.authentication.presentation.register.SuccessBusinessScreen
 import com.paxtech.mobileapp.features.clientDashboard.presentation.salondetail.SalonDetailRoute
 
 @Preview
@@ -35,6 +40,61 @@ fun AppNav(){
         composable(Route.Welcome.route) {
             WelcomeScreen(
                 onStartClick = {
+                    navController.navigate(Route.Login.route) {
+                        popUpTo(Route.Splash.route) { inclusive = true }
+                    }
+                }
+            )
+        }
+        
+        // Pantalla de Login
+        composable(Route.Login.route) {
+            LoginScreen(
+                onLoginClick = {
+                    navController.navigate(Route.Home.route) {
+                        popUpTo(Route.Splash.route) { inclusive = true }
+                    }
+                },
+                onRegisterClick = {
+                    navController.navigate(Route.Register.route)
+                }
+            )
+        }
+        
+        // Pantalla de Registro
+        composable(Route.Register.route) {
+            RegisterScreen(
+                onRegisterClick = { registerType ->
+                    when (registerType) {
+                        RegisterType.CLIENT -> {
+                            navController.navigate(Route.SuccessClient.route)
+                        }
+                        RegisterType.BUSINESS -> {
+                            navController.navigate(Route.SuccessBusiness.route)
+                        }
+                    }
+                },
+                onLoginClick = {
+                    navController.popBackStack()
+                }
+            )
+        }
+        
+        // Pantalla de Éxito Cliente
+        composable(Route.SuccessClient.route) {
+            SuccessClientScreen(
+                onStartNowClick = {
+                    navController.navigate(Route.Home.route) {
+                        popUpTo(Route.Splash.route) { inclusive = true }
+                    }
+                }
+            )
+        }
+        
+        // Pantalla de Éxito Negocio
+        composable(Route.SuccessBusiness.route) {
+            SuccessBusinessScreen(
+                onStartNowClick = {
                     navController.navigate(Route.Home.route) {
                         popUpTo(Route.Splash.route) { inclusive = true }
                     }
@@ -75,6 +135,8 @@ sealed class Route(val route: String) {
     object Welcome: Route("welcome")
     object Login: Route("login")
     object Register: Route("register")
+    object SuccessClient: Route("success_client")
+    object SuccessBusiness: Route("success_business")
     
     object Main: Route("main")
     object Home : Route("home")
