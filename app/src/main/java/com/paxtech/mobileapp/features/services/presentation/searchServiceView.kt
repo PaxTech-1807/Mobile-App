@@ -1,6 +1,5 @@
 package com.paxtech.mobileapp.features.services.presentation
 
-import android.R
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,33 +26,41 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.paxtech.mobileapp.shared.model.Service
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.paxtech.mobileapp.features.services.domain.Service
+import com.paxtech.mobileapp.shared.model.ServiceResult
 
 @Preview(showBackground = true)
 @Composable
-fun SearchServiceView() {
+fun SearchServiceView(
+    viewModel: SearchServiceViewModel = hiltViewModel()
+) {
 
-    val ahorita = listOf<String>("holi", "boli", "pink", "pie", "chi")
+    val categories = listOf<String>(
+        "Maquillaje", "Manicure", "Barberia", "Cuidado Facial", "Masajes",
+        "Coloracion & Mechas", "Corte de Cabello", "Peinados", "Alisados",
+        "Hidratacion & Mascarillas", "Permanentes", "Pestanas & Cejas")
 
-    val servicios = listOf<Service>(
-        Service( 1, "nat", 1000, 500.00, "yo" ),
-        Service( 1, "nat", 1000, 500.00, "yo" ),
-        Service( 1, "nat", 1000, 500.00, "yo" )
+    val query = viewModel.query.collectAsState()
+    val services = viewModel.services.collectAsState()
+
+    val servicios = listOf<ServiceResult>(
+        ServiceResult( 1, "nat", 1000, 500, 1 ),
+        ServiceResult( 1, "nat", 1000, 500, 2 ),
+        ServiceResult( 1, "nat", 1000, 500, 3 )
     )
 
     val isSearchBarActive = remember {
-        mutableStateOf<Boolean>(true)
+        mutableStateOf<Boolean>(false)
     }
 
     Column(
@@ -68,9 +75,9 @@ fun SearchServiceView() {
             }
         }
         OutlinedTextField(
-            value = "",
+            value = query.value,
             onValueChange = {
-                ""
+                viewModel.onChangeQuery(it)
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -78,6 +85,7 @@ fun SearchServiceView() {
             trailingIcon = {
                 IconButton(onClick = {
                     isSearchBarActive.value = true
+                    viewModel.searchService()
                 }) {
                     Icon(Icons.Default.Search, contentDescription = null)
                 }
@@ -102,7 +110,7 @@ fun SearchServiceView() {
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    items(ahorita) { category ->
+                    items(categories) { category ->
                         CategoryCard(category)
                     }
                 }
@@ -117,11 +125,11 @@ fun SearchServiceView() {
                 }
                 LazyColumn(
                     modifier = Modifier
-                        .padding(horizontal = 8.dp)
+                        .padding(horizontal = 12.dp)
                         .fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
-                    items(servicios) { service ->
+                    items(services.value) { service ->
                         ServiceCard(service)
                     }
                 }
@@ -135,7 +143,7 @@ fun CategoryCard(title: String) {
     Card (
         modifier = Modifier
             .border(width = 2.dp, color = MaterialTheme.colorScheme.onPrimaryFixedVariant, shape = CardDefaults.elevatedShape)
-            .padding(8.dp)
+            .padding(4.dp)
             .height(70.dp)
     ){
         Box(
@@ -148,7 +156,9 @@ fun CategoryCard(title: String) {
                 style = MaterialTheme.typography.headlineMedium.copy(
                     color = MaterialTheme.colorScheme.onPrimaryFixedVariant,
                     fontFamily = FontFamily.Cursive
-                )
+                ),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
             )
         }
     }
@@ -159,11 +169,11 @@ fun ServiceCard(service: Service) {
     Card (
         modifier = Modifier
             .border(width = 2.dp, color = MaterialTheme.colorScheme.onPrimaryFixedVariant, shape = CardDefaults.elevatedShape)
-            .padding(8.dp)
-            .height(150.dp)
+            .fillMaxWidth()
+            .height(180.dp)
     ){
         Box(
-            modifier = Modifier.padding(4.dp)
+            modifier = Modifier.padding(horizontal = 16.dp).padding(vertical = 4.dp)
         ){
             Text(
                 text = service.name,
@@ -171,24 +181,27 @@ fun ServiceCard(service: Service) {
             )
         }
         Box(
-            modifier = Modifier.padding(4.dp)
+            modifier = Modifier.padding(horizontal = 16.dp)
         ){
             Text(
-                text = "Aprox duration: " + service.duration + "minutes",
+                text = "Aprox duration: " + service.duration + " minutes",
                 style = MaterialTheme.typography.titleLarge
             )
         }
-        Row {
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
             Box(
-                modifier = Modifier.padding(4.dp)
+                modifier = Modifier.padding(vertical = 8.dp)
             ){
                 Text(
-                    text = "Salon: " + service.provider,
+                    text = "Salon: " + service.providerId,
                     style = MaterialTheme.typography.titleMedium
                 )
             }
             Box(
-                modifier = Modifier.padding(4.dp)
+                modifier = Modifier.padding(vertical = 8.dp)
             ){
                 Text(
                     text = "Price S/: " + service.price,
@@ -196,8 +209,15 @@ fun ServiceCard(service: Service) {
                 )
             }
         }
-        ElevatedButton(onClick = {}) {
-            Text("Reservar ahora")
+        Box(
+            modifier = Modifier.fillMaxWidth().height(70.dp).padding(4.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            ElevatedButton(
+                onClick = {}
+            ) {
+                Text("Reservar ahora")
+            }
         }
     }
 }

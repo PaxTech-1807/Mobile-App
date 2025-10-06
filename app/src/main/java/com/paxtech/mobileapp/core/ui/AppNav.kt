@@ -37,6 +37,7 @@ fun AppNav(){
                 onBack = { navController.popBackStack() }
             )
         }
+        // composable { Route. }
     }
 }
 
@@ -46,9 +47,10 @@ sealed class Route(val route: String) {
 
     object Main: Route("main")
     object Home : Route("home")
-    object Favorites : Route("favorites")
     object Cart : Route("cart")
     object Profile : Route("profile")
+
+    object Services : Route("services")
 
     object SalonDetails : Route("salon_detail") {
         const val routeWithArgument = "salon_detail/{id}"
