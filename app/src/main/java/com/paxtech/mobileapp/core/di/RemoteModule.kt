@@ -16,7 +16,7 @@ object RemoteModule {
     @Singleton
     @Named("url")
     fun provideApiBaseUrl(): String{
-        return "http://192.168.18.151:8080/api/v1/ "
+        return "https://utime-web-service.onrender.com/"
     }
 
     @Provides

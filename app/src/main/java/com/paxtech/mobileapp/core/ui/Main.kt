@@ -28,6 +28,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.paxtech.mobileapp.features.clientDashboard.presentation.home.Home
 import com.paxtech.mobileapp.features.clientDashboard.presentation.home.SalonDebugScreen
+import com.paxtech.mobileapp.features.services.presentation.SearchServiceView
 
 data class NavigationItem(
     val icon: ImageVector,
@@ -43,7 +44,7 @@ fun Main(onClick: (Int) -> Unit) {
     // map each tab to its route + icon (use your sealed routes)
     val tabs = listOf(
         Route.Home to Icons.Default.Home,
-        Route.Favorites to Icons.Default.Search,      // your magnifier icon
+        Route.Services to Icons.Default.Search,      // your magnifier icon
         Route.Cart to Icons.Default.CalendarToday,    // your calendar icon
         Route.Profile to Icons.Default.Person
     )
@@ -76,7 +77,7 @@ fun Main(onClick: (Int) -> Unit) {
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(Route.Home.route)     { Home(onSalonClick = onClick)  }
-            composable(Route.Favorites.route){ Text("Favorites") }
+            composable(Route.Services.route) { SearchServiceView() }
             composable(Route.Cart.route)     { Text("Cart") }
             composable(Route.Profile.route)  { Text("Profile") }
         }
