@@ -9,32 +9,7 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="05c019d7-cb6a-47fa-88da-bb4b97059d51" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/paxtech/mobileapp/core/di/RemoteModule.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/paxtech/mobileapp/features/clientDashboard/data/di/RemoteModule.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/paxtech/mobileapp/features/clientDashboard/data/local/model/SalonEntity.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/paxtech/mobileapp/features/clientDashboard/data/remote/model/SalonDto.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/paxtech/mobileapp/features/clientDashboard/data/remote/services/SalonService.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/paxtech/mobileapp/features/clientDashboard/data/repositories/SalonRepositoryImpl.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/paxtech/mobileapp/features/clientDashboard/domain/di/RepositoryModule.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/paxtech/mobileapp/features/clientDashboard/domain/domain/SalonRepository.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/paxtech/mobileapp/features/clientDashboard/presentation/home/HomeViewModel.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/paxtech/mobileapp/features/clientDashboard/presentation/home/SalonDebugScreen.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/paxtech/mobileapp/features/clientDashboard/presentation/salondetail/SalonDetailRoute.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/paxtech/mobileapp/features/clientDashboard/presentation/salondetail/SalonDetailScreen.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/app/src/main/java/com/paxtech/mobileapp/features/clientDashboard/presentation/salondetail/SalonDetailViewModel.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.13/executionHistory/executionHistory.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.13/executionHistory/executionHistory.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.13/fileHashes/fileHashes.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.13/fileHashes/fileHashes.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/8.13/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/8.13/fileHashes/fileHashes.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/deploymentTargetSelector.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/deploymentTargetSelector.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/paxtech/mobileapp/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/paxtech/mobileapp/MainActivity.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/paxtech/mobileapp/core/ui/AppNav.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/paxtech/mobileapp/core/ui/AppNav.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/paxtech/mobileapp/core/ui/Main.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/paxtech/mobileapp/core/ui/Main.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/paxtech/mobileapp/features/clientDashboard/presentation/home/Home.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/paxtech/mobileapp/features/clientDashboard/presentation/home/Home.kt" afterDir="false" />
-    </list>
+    <list default="true" id="05c019d7-cb6a-47fa-88da-bb4b97059d51" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -100,7 +75,7 @@
     "RunOnceActivity.readMode.enableVisualFormatting": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "feature/homeFeature"
+    "git-widget-placeholder": "develop"
   }
 }]]></component>
   <component name="RecentsManager">
