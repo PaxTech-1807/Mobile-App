@@ -10,14 +10,99 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.paxtech.mobileapp.features.authentication.presentation.splash.SplashScreen
+import com.paxtech.mobileapp.features.authentication.presentation.welcome.WelcomeScreen
+import com.paxtech.mobileapp.features.authentication.presentation.login.LoginScreen
+import com.paxtech.mobileapp.features.authentication.presentation.register.RegisterScreen
+import com.paxtech.mobileapp.features.authentication.presentation.register.RegisterType
+import com.paxtech.mobileapp.features.authentication.presentation.register.SuccessClientScreen
+import com.paxtech.mobileapp.features.authentication.presentation.register.SuccessBusinessScreen
 import com.paxtech.mobileapp.features.clientDashboard.presentation.salondetail.SalonDetailRoute
 
 @Preview
 @Composable
 fun AppNav(){
     val navController = rememberNavController()
-    NavHost(navController, startDestination = Route.Home.route){
+    NavHost(navController, startDestination = Route.Splash.route){
 
+        // Pantalla de Splash
+        composable(Route.Splash.route) {
+            SplashScreen(
+                onNavigateToWelcome = {
+                    navController.navigate(Route.Welcome.route) {
+                        popUpTo(Route.Splash.route) { inclusive = true }
+                    }
+                }
+            )
+        }
+        
+        // Pantalla de Bienvenida
+        composable(Route.Welcome.route) {
+            WelcomeScreen(
+                onStartClick = {
+                    navController.navigate(Route.Login.route) {
+                        popUpTo(Route.Splash.route) { inclusive = true }
+                    }
+                }
+            )
+        }
+        
+        // Pantalla de Login
+        composable(Route.Login.route) {
+            LoginScreen(
+                onLoginClick = {
+                    navController.navigate(Route.Home.route) {
+                        popUpTo(Route.Splash.route) { inclusive = true }
+                    }
+                },
+                onRegisterClick = {
+                    navController.navigate(Route.Register.route)
+                }
+            )
+        }
+        
+        // Pantalla de Registro
+        composable(Route.Register.route) {
+            RegisterScreen(
+                onRegisterClick = { registerType ->
+                    when (registerType) {
+                        RegisterType.CLIENT -> {
+                            navController.navigate(Route.SuccessClient.route)
+                        }
+                        RegisterType.BUSINESS -> {
+                            navController.navigate(Route.SuccessBusiness.route)
+                        }
+                    }
+                },
+                onLoginClick = {
+                    navController.popBackStack()
+                }
+            )
+        }
+        
+        // Pantalla de Éxito Cliente
+        composable(Route.SuccessClient.route) {
+            SuccessClientScreen(
+                onStartNowClick = {
+                    navController.navigate(Route.Home.route) {
+                        popUpTo(Route.Splash.route) { inclusive = true }
+                    }
+                }
+            )
+        }
+        
+        // Pantalla de Éxito Negocio
+        composable(Route.SuccessBusiness.route) {
+            SuccessBusinessScreen(
+                onStartNowClick = {
+                    navController.navigate(Route.Home.route) {
+                        popUpTo(Route.Splash.route) { inclusive = true }
+                    }
+                }
+            )
+        }
+
+        // Pantalla principal
         composable(Route.Home.route){
             Main(
                 onClick = {id ->
@@ -25,6 +110,7 @@ fun AppNav(){
                 }
             )
         }
+        
         composable(
             route = Route.SalonDetails.routeWithArgument,
             arguments = listOf(navArgument(Route.SalonDetails.argument) {
@@ -45,6 +131,13 @@ fun AppNav(){
 
 sealed class Route(val route: String) {
 
+    object Splash: Route("splash")
+    object Welcome: Route("welcome")
+    object Login: Route("login")
+    object Register: Route("register")
+    object SuccessClient: Route("success_client")
+    object SuccessBusiness: Route("success_business")
+    
     object Main: Route("main")
     object Home : Route("home")
     object Cart : Route("cart")
