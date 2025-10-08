@@ -35,3 +35,6 @@ Thumbs.db
 
 # Configuración de entorno
 .env
+
+# Gradle cache
+.gradle/
