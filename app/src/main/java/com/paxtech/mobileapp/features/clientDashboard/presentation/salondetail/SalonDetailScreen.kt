@@ -1,31 +1,25 @@
-// features/clientDashboard/presentation/details/SalonDetailScreen.kt
 package com.paxtech.mobileapp.features.clientDashboard.presentation.salondetail
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.paxtech.mobileapp.shared.model.Salon
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.outlined.FavoriteBorder
 import com.paxtech.mobileapp.features.clientDashboard.presentation.details.AboutUi
 import com.paxtech.mobileapp.features.clientDashboard.presentation.details.ReviewUi
 import com.paxtech.mobileapp.features.clientDashboard.presentation.details.ServiceUi
+import com.paxtech.mobileapp.shared.model.Salon
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,7 +28,8 @@ fun SalonDetailScreen(
     services: List<ServiceUi>,
     reviews: List<ReviewUi>,
     about: AboutUi,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onReserveService: (ServiceUi) -> Unit
 ) {
     var tab by remember { mutableStateOf(0) }
     val tabs = listOf("Servicios", "Reseñas", "Acerca de")
@@ -42,11 +37,11 @@ fun SalonDetailScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(salon?.companyName.orEmpty()) },
+                title = { Text(salon?.companyName ?: "Salón") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,  // RTL-friendly back arrow
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back"
                         )
                     }
@@ -65,10 +60,9 @@ fun SalonDetailScreen(
                 .padding(padding)
         ) {
             item {
-                // cover image + rating badge (simple)
                 AsyncImage(
-                    model = salon?.coverImageUrl,
-                    contentDescription = salon?.companyName,
+                    model = salon?.coverImageUrl ?: "",
+                    contentDescription = salon?.companyName ?: "Salón",
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(180.dp),
@@ -78,18 +72,17 @@ fun SalonDetailScreen(
 
                 Column(Modifier.padding(horizontal = 16.dp)) {
                     Text(
-                        salon?.companyName.orEmpty(),
+                        salon?.companyName ?: "Nombre no disponible",
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.SemiBold
                     )
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(Icons.Default.Place, contentDescription = null)
                         Spacer(Modifier.width(6.dp))
-                        Text("Av. Primavera 123, Santiago de Surco") // mock for now
+                        Text(about.address)
                     }
                     Spacer(Modifier.height(8.dp))
 
-                    // Social chips (mock)
                     FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         AssistChip(onClick = {}, label = { Text("Instagram") })
                         AssistChip(onClick = {}, label = { Text("TikTok") })
@@ -110,21 +103,24 @@ fun SalonDetailScreen(
             }
 
             when (tab) {
-                0 -> { // Servicios
+                0 -> {
                     items(services) { svc ->
-                        ServiceRow(svc)
+                        ServiceRow(
+                            svc = svc,
+                            onReserveClick = { onReserveService(svc) }
+                        )
                         Divider()
                     }
                     item { Spacer(Modifier.height(16.dp)) }
                 }
-                1 -> { // Reseñas
+                1 -> {
                     items(reviews) { rev ->
                         ReviewRow(rev)
                         Divider()
                     }
                     item { Spacer(Modifier.height(16.dp)) }
                 }
-                2 -> { // Acerca de
+                2 -> {
                     item {
                         AboutBlock(about)
                         Spacer(Modifier.height(24.dp))
@@ -136,7 +132,10 @@ fun SalonDetailScreen(
 }
 
 @Composable
-private fun ServiceRow(svc: ServiceUi) {
+private fun ServiceRow(
+    svc: ServiceUi,
+    onReserveClick: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -151,7 +150,10 @@ private fun ServiceRow(svc: ServiceUi) {
             Text(svc.price, fontWeight = FontWeight.SemiBold)
             Text("${svc.durationMins} mins", style = MaterialTheme.typography.labelSmall)
             Spacer(Modifier.height(6.dp))
-            AssistChip(onClick = { /* later: open booking */ }, label = { Text("Reservar") })
+            AssistChip(
+                onClick = onReserveClick,
+                label = { Text("Reservar") }
+            )
         }
     }
 }

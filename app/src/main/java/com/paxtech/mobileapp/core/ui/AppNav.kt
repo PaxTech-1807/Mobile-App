@@ -3,6 +3,8 @@ package com.paxtech.mobileapp.core.ui
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavType
@@ -18,14 +20,23 @@ import com.paxtech.mobileapp.features.authentication.presentation.register.Regis
 import com.paxtech.mobileapp.features.authentication.presentation.register.SuccessClientScreen
 import com.paxtech.mobileapp.features.authentication.presentation.register.SuccessBusinessScreen
 import com.paxtech.mobileapp.features.clientDashboard.presentation.salondetail.SalonDetailRoute
+import com.paxtech.mobileapp.features.clientDashboard.presentation.professionalselection.ProfessionalSelectionScreen
+import com.paxtech.mobileapp.features.clientDashboard.presentation.timeselection.TimeSelectionScreen
+import com.paxtech.mobileapp.features.clientDashboard.presentation.confirmation.ConfirmationScreen
+import com.paxtech.mobileapp.features.clientDashboard.presentation.confirmation.ReservationConfirmedScreen
+import com.paxtech.mobileapp.features.clientDashboard.presentation.details.ServiceUi
+import com.paxtech.mobileapp.features.clientDashboard.presentation.shared.ReservationData
+import com.paxtech.mobileapp.features.clientDashboard.presentation.shared.ServiceData
 
 @Preview
 @Composable
 fun AppNav(){
     val navController = rememberNavController()
+
+    val reservationData = remember { mutableStateOf<ReservationData?>(null) }
+
     NavHost(navController, startDestination = Route.Splash.route){
 
-        // Pantalla de Splash
         composable(Route.Splash.route) {
             SplashScreen(
                 onNavigateToWelcome = {
@@ -35,8 +46,7 @@ fun AppNav(){
                 }
             )
         }
-        
-        // Pantalla de Bienvenida
+
         composable(Route.Welcome.route) {
             WelcomeScreen(
                 onStartClick = {
@@ -46,8 +56,7 @@ fun AppNav(){
                 }
             )
         }
-        
-        // Pantalla de Login
+
         composable(Route.Login.route) {
             LoginScreen(
                 onLoginClick = {
@@ -60,8 +69,7 @@ fun AppNav(){
                 }
             )
         }
-        
-        // Pantalla de Registro
+
         composable(Route.Register.route) {
             RegisterScreen(
                 onRegisterClick = { registerType ->
@@ -79,8 +87,7 @@ fun AppNav(){
                 }
             )
         }
-        
-        // Pantalla de Éxito Cliente
+
         composable(Route.SuccessClient.route) {
             SuccessClientScreen(
                 onStartNowClick = {
@@ -90,8 +97,7 @@ fun AppNav(){
                 }
             )
         }
-        
-        // Pantalla de Éxito Negocio
+
         composable(Route.SuccessBusiness.route) {
             SuccessBusinessScreen(
                 onStartNowClick = {
@@ -102,7 +108,6 @@ fun AppNav(){
             )
         }
 
-        // Pantalla principal
         composable(Route.Home.route){
             Main(
                 onClick = {id ->
@@ -110,24 +115,181 @@ fun AppNav(){
                 }
             )
         }
-        
+
         composable(
             route = Route.SalonDetails.routeWithArgument,
             arguments = listOf(navArgument(Route.SalonDetails.argument) {
                 type = NavType.IntType
             })
         ) { backStack ->
-            val id = backStack.arguments?.getInt(Route.SalonDetails.argument) ?: 0
+            val salonId = backStack.arguments?.getInt(Route.SalonDetails.argument) ?: 0
+
             SalonDetailRoute(
-                salonId = id,
-                onBack = { navController.popBackStack() }
+                salonId = salonId,
+                onBack = { navController.popBackStack() },
+                onReserveService = { service, salonName, salonAddress, salonRating ->
+
+                    reservationData.value = ReservationData(
+                        salonId = salonId,
+                        salonName = salonName,
+                        salonAddress = salonAddress,
+                        salonRating = salonRating,
+                        service = ServiceData(
+                            id = service.id,
+                            title = service.title,
+                            subtitle = service.subtitle,
+                            price = service.price,
+                            durationMins = service.durationMins
+                        )
+                    )
+
+                    navController.navigate("${Route.ProfessionalSelection.route}/${service.id}") {
+                        launchSingleTop = true
+                    }
+                }
             )
         }
-        // composable { Route. }
+
+        composable(
+            route = Route.ProfessionalSelection.routeWithArgument,
+            arguments = listOf(navArgument(Route.ProfessionalSelection.argument) {
+                type = NavType.StringType
+            })
+        ) { backStack ->
+            val currentData = reservationData.value
+            if (currentData == null) {
+                navController.popBackStack()
+                return@composable
+            }
+
+            ProfessionalSelectionScreen(
+                service = ServiceUi(
+                    id = currentData.service.id,
+                    title = currentData.service.title,
+                    subtitle = currentData.service.subtitle,
+                    price = currentData.service.price,
+                    durationMins = currentData.service.durationMins
+                ),
+                onBack = {
+                    navController.popBackStack()
+                },
+                onContinue = { selectedProfessional ->
+                    reservationData.value = currentData.copy(
+                        selectedProfessional = selectedProfessional
+                    )
+
+                    navController.navigate("${Route.TimeSelection.route}/${currentData.service.id}") {
+                        launchSingleTop = true
+                    }
+                }
+            )
+        }
+
+        composable(
+            route = Route.TimeSelection.routeWithArgument,
+            arguments = listOf(navArgument(Route.TimeSelection.argument) {
+                type = NavType.StringType
+            })
+        ) { backStack ->
+            val currentData = reservationData.value
+            if (currentData == null) {
+                navController.popBackStack()
+                return@composable
+            }
+
+            TimeSelectionScreen(
+                serviceName = currentData.service.title,
+                servicePrice = currentData.service.price,
+                serviceDuration = currentData.service.durationMins,
+                selectedProfessional = currentData.selectedProfessional,
+                salonName = currentData.salonName,
+                salonAddress = currentData.salonAddress,
+                onBack = {
+                    navController.popBackStack()
+                },
+                onContinue = { selectedDate, selectedTime, formattedDate, formattedTime ->
+
+                    reservationData.value = currentData.copy(
+                        selectedDate = selectedDate,
+                        selectedTime = selectedTime,
+                        formattedDate = formattedDate,
+                        formattedTime = formattedTime
+                    )
+
+                    navController.navigate("${Route.Confirmation.route}/${currentData.service.id}") {
+                        launchSingleTop = true
+                    }
+                }
+            )
+        }
+
+        composable(
+            route = Route.Confirmation.routeWithArgument,
+            arguments = listOf(navArgument(Route.Confirmation.argument) {
+                type = NavType.StringType
+            })
+        ) { backStack ->
+            val currentData = reservationData.value
+            if (currentData == null) {
+                navController.popBackStack()
+                return@composable
+            }
+
+            ConfirmationScreen(
+                reservationDetails = com.paxtech.mobileapp.features.clientDashboard.presentation.confirmation.ReservationDetails(
+                    salonName = currentData.salonName,
+                    rating = currentData.salonRating,
+                    address = currentData.salonAddress,
+                    serviceName = currentData.service.title,
+                    date = currentData.formattedDate,
+                    time = currentData.formattedTime,
+                    duration = currentData.service.durationMins,
+                    professional = currentData.selectedProfessional,
+                    totalPrice = currentData.service.price
+                ),
+                onBack = {
+                    navController.popBackStack()
+                },
+                onConfirm = {
+                    println("✅ RESERVA CONFIRMADA CON DATOS REALES:")
+                    println("✅ Salón: ${currentData.salonName}")
+                    println("✅ Dirección: ${currentData.salonAddress}")
+                    println("✅ Servicio: ${currentData.service.title}")
+                    println("✅ Precio: ${currentData.service.price}")
+                    println("✅ Duración: ${currentData.service.durationMins} min")
+                    println("✅ Profesional: ${currentData.selectedProfessional}")
+                    println("✅ Fecha: ${currentData.formattedDate}")
+                    println("✅ Hora: ${currentData.formattedTime}")
+
+
+                    navController.navigate(Route.ReservationConfirmed.route) {
+
+                        popUpTo(Route.Home.route) { inclusive = false }
+                    }
+                }
+            )
+        }
+
+        composable(Route.ReservationConfirmed.route) {
+            val currentData = reservationData.value
+            if (currentData != null) {
+                ReservationConfirmedScreen(
+                    reservationData = currentData,
+                    onBackToHome = {
+                        navController.navigate(Route.Home.route) {
+                            popUpTo(Route.Home.route) { inclusive = true }
+                        }
+                    }
+                )
+            } else {
+
+                navController.navigate(Route.Home.route) {
+                    popUpTo(Route.Home.route) { inclusive = true }
+                }
+            }
+        }
     }
 }
-
-
 
 sealed class Route(val route: String) {
 
@@ -137,17 +299,31 @@ sealed class Route(val route: String) {
     object Register: Route("register")
     object SuccessClient: Route("success_client")
     object SuccessBusiness: Route("success_business")
-    
-    object Main: Route("main")
+
     object Home : Route("home")
     object Cart : Route("cart")
     object Profile : Route("profile")
-
     object Services : Route("services")
 
     object SalonDetails : Route("salon_detail") {
         const val routeWithArgument = "salon_detail/{id}"
         const val argument = "id"
     }
-}
 
+    object ProfessionalSelection : Route("professional_selection") {
+        const val routeWithArgument = "professional_selection/{service_id}"
+        const val argument = "service_id"
+    }
+
+    object TimeSelection : Route("time_selection") {
+        const val routeWithArgument = "time_selection/{service_id}"
+        const val argument = "service_id"
+    }
+
+    object Confirmation : Route("confirmation") {
+        const val routeWithArgument = "confirmation/{service_id}"
+        const val argument = "service_id"
+    }
+
+    object ReservationConfirmed : Route("reservation_confirmed")
+}
