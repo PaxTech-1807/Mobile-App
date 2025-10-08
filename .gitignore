@@ -1,5 +1,7 @@
 # Archivos de Gradle
 .gradle/
+.gradle
+.gradle/*
 build/
 **/build/
 
@@ -8,6 +10,8 @@ local.properties
 
 # Archivos de IntelliJ / Android Studio
 .idea/
+.idea
+.idea/*
 *.iml
 *.ipr
 *.iws
