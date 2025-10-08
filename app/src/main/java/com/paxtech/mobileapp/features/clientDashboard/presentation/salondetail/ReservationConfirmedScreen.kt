@@ -87,8 +87,6 @@ fun ReservationConfirmedScreen(
             }
 
             Spacer(modifier = Modifier.height(16.dp))
-
-            // Botón secundario
             TextButton(
                 onClick = { /* TODO: Agregar funcionalidad de compartir */ },
                 modifier = Modifier.fillMaxWidth()
