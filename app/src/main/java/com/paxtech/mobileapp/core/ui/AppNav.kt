@@ -33,7 +33,6 @@ import com.paxtech.mobileapp.features.clientDashboard.presentation.shared.Servic
 fun AppNav(){
     val navController = rememberNavController()
 
-    // Estado compartido para los datos de reserva
     val reservationData = remember { mutableStateOf<ReservationData?>(null) }
 
     NavHost(navController, startDestination = Route.Splash.route){
@@ -129,7 +128,7 @@ fun AppNav(){
                 salonId = salonId,
                 onBack = { navController.popBackStack() },
                 onReserveService = { service, salonName, salonAddress, salonRating ->
-                    // Guardar datos iniciales de la reserva
+
                     reservationData.value = ReservationData(
                         salonId = salonId,
                         salonName = salonName,
@@ -175,7 +174,6 @@ fun AppNav(){
                     navController.popBackStack()
                 },
                 onContinue = { selectedProfessional ->
-                    // Actualizar datos con el profesional seleccionado
                     reservationData.value = currentData.copy(
                         selectedProfessional = selectedProfessional
                     )
@@ -210,7 +208,7 @@ fun AppNav(){
                     navController.popBackStack()
                 },
                 onContinue = { selectedDate, selectedTime, formattedDate, formattedTime ->
-                    // Actualizar datos con fecha y hora seleccionadas
+
                     reservationData.value = currentData.copy(
                         selectedDate = selectedDate,
                         selectedTime = selectedTime,
@@ -263,9 +261,9 @@ fun AppNav(){
                     println("✅ Fecha: ${currentData.formattedDate}")
                     println("✅ Hora: ${currentData.formattedTime}")
 
-                    // Navegar a la pantalla de confirmación exitosa
+
                     navController.navigate(Route.ReservationConfirmed.route) {
-                        // Limpiar el stack de navegación de todo el flujo de reserva
+
                         popUpTo(Route.Home.route) { inclusive = false }
                     }
                 }
@@ -284,7 +282,7 @@ fun AppNav(){
                     }
                 )
             } else {
-                // Si no hay datos, volver al home
+
                 navController.navigate(Route.Home.route) {
                     popUpTo(Route.Home.route) { inclusive = true }
                 }

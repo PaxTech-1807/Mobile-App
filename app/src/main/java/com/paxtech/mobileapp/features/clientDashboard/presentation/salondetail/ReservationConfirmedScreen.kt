@@ -36,7 +36,7 @@ fun ReservationConfirmedScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            // Icono de confirmación
+
             Icon(
                 imageVector = Icons.Filled.CheckCircle,
                 contentDescription = "Cita confirmada",
@@ -151,7 +151,7 @@ private fun ReservationDetailsCard(reservationData: ReservationData) {
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // Detalles de la reserva
+
             ReservationDetailItem(
                 title = "Servicio",
                 value = reservationData.service.title
@@ -194,7 +194,7 @@ private fun ReservationDetailsCard(reservationData: ReservationData) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Precio total
+
             Divider(
                 modifier = Modifier.fillMaxWidth(),
                 color = MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)

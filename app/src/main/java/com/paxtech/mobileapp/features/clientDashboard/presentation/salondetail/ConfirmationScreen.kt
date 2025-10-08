@@ -57,16 +57,16 @@ fun ConfirmationScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Resumen de precio
+
                 PriceSummaryCard(reservationDetails)
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // Información adicional
+
                 AdditionalInfoSection()
             }
 
-            // Botones en la parte inferior
+
             Column(
                 modifier = Modifier
                     .fillMaxWidth()

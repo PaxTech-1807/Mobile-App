@@ -48,7 +48,7 @@ fun SalonDetailRoute(
                 service,
                 salon?.companyName ?: "Salón",
                 defaultAbout.address,
-                4.7 // Rating por defecto, podrías obtenerlo de reviews
+                4.7
             )
         }
     )
