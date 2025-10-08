@@ -57,7 +57,6 @@ fun ReservationConfirmedScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Mensaje de confirmación
             Text(
                 text = "Tu reserva ha sido confirmada exitosamente. Te hemos enviado un correo con todos los detalles.",
                 style = MaterialTheme.typography.bodyLarge,
