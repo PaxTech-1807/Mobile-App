@@ -28,7 +28,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.paxtech.mobileapp.features.clientDashboard.presentation.home.Home
 import com.paxtech.mobileapp.features.clientDashboard.presentation.home.SalonDebugScreen
-import com.paxtech.mobileapp.features.profile.presentation.ProfileNav
 import com.paxtech.mobileapp.features.services.presentation.SearchServiceView
 
 data class NavigationItem(
@@ -80,7 +79,7 @@ fun Main(onClick: (Int) -> Unit) {
             composable(Route.Home.route)     { Home(onSalonClick = onClick)  }
             composable(Route.Services.route) { SearchServiceView() }
             composable(Route.Cart.route)     { Text("Cart") }
-            composable(Route.Profile.route)  { ProfileNav() }
+            composable(Route.Profile.route)  { Text("Profile") }
         }
     }
 }
