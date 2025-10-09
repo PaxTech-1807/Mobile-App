@@ -11,18 +11,22 @@ class SalonRepositoryImpl @Inject constructor(
     private val service: SalonService
 ): SalonRepository {
     override suspend fun getAllSalons(): List<Salon> = withContext(Dispatchers.IO){
-        val resp = service.getAllSalons()
-        if (resp.isSuccessful){
-            val body = resp.body().orEmpty()
-            return@withContext body.map { dto ->
-                Salon(
-                    dto.id ?: 0,
-                    dto.companyName.orEmpty(),
-                    dto.coverImageUrl.orEmpty()
-                )
+        try {
+            val resp = service.getAllSalons()
+            if (resp.isSuccessful){
+                val body = resp.body().orEmpty()
+                return@withContext body.map { dto ->
+                    Salon(
+                        dto.id ?: 0,
+                        dto.companyName.orEmpty(),
+                        dto.coverImageUrl.orEmpty()
+                    )
+                }
             }
+            emptyList()
+        } catch (e: Exception) {
+            emptyList()
         }
-        emptyList()
     }
 
     // SalonRepositoryImpl.kt
